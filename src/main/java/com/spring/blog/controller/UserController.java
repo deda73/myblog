@@ -41,6 +41,7 @@ public class UserController {
     @RequestMapping("/checkLoginEmail")
     public boolean checkLogin3(@RequestBody Map map) {
         User user = new User();
+        User user1 = new User();
         user.setUserEmail((String)map.get("userEmail"));
         user.setUserPassword((String)map.get("userPassword"));
         return userService.findByEmailAndPassword(user)==1;
