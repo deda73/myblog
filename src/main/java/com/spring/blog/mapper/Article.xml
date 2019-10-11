@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.spring.blog.mapper.ArticleMapper">
+    <resultMap id="articleMap" type="com.spring.blog.entity.Article">
+        <result property="articleId" column="article_id" />
+        <result property="articleTitle" column="article_title" />
+        <result property="articleTime" column="article_time" />
+        <result property="articleContent" column="article_content" />
+        <result property="articleUserName" column="article_user_name" />
+        <result property="articleCategoryName" column="article_category_name" />
+    </resultMap>
+    <!--  文章目录(id title time userName category)  -->
+    <select id="findAll" resultMap="articleMap">
+        SELECT article_id,article_title,article_time,article_content,article_user_name,article_category_name FROM article
+    </select>
+
+    <!--  添加文章  -->
+    <insert id="addArticle" parameterType="com.spring.blog.entity.FirstBean">
+        INSERT INTO article(article_title,article_time,article_user_name,article_category_name,article_content) VALUES (#{articleTitle},#{articleTime},(
+        SELECT user_name FROM user WHERE user_id = #{articleUserId}),(SELECT category_name FROM category where category_id = #{articleCategoryId}),#{articleContent})
+    </insert>
+
+    <!--  查找文章总数  -->
+    <select id="getCount" resultType="_int">
+        SELECT count(*) FROM article
+    </select>
+
+    <!--  分页查找  -->
+    <select id="pageIndex" resultMap="articleMap">
+        SELECT article_id,article_title,article_time,article_content,article_user_name,article_category_name FROM article limit #{page},#{size};
+    </select>
+
+    <!--  根据 id 删除文章  -->
+    <delete id="deleteByArticleId" parameterType="_int">
+        DELETE FROM article WHERE article_id = #{articleId}
+    </delete>
+
+    <!--  修改文章  -->
+    <update id="updateArticleById" parameterType="com.spring.blog.entity.FirstBean">
+        UPDATE article
+        SET article_title = #{articleTitle},article_category_name = #{articleCategoryName},article_time = #{articleTime},article_content = #{articleContent}
+        WHERE article_id = #{articleId}
+    </update>
+    <!--  根据 userId 查找文章  -->
+    <select id="selectArticleByUserId" parameterType="_int" resultMap="articleMap">
+        SELECT article_id,article_title,article_time,article_content,article_user_name,article_category_name FROM article
+        WHERE article_user_name = (SELECT user_name FROM user WHERE user_id = #{userId});
+    </select>
+
+    <!--  根据 categoryName 查找文章  -->
+    <select id="selectArticleByCategoryName" parameterType="string" resultMap="articleMap">
+        SELECT article_id,article_title,article_time,article_content,article_user_name,article_category_name FROM article
+        WHERE article_category_name = #{categoryName};
+    </select>
+</mapper>

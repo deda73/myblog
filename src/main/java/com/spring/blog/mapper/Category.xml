@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.spring.blog.mapper.CategoryMapper">
+    <select id="findAll" resultType="com.spring.blog.entity.Category">
+        SELECT category_id categoryId,category_name categoryName,category_time categoryTime FROM category
+    </select>
+    <!--  根据 id 删除记录  -->
+    <delete id="deleteById" parameterType="_int">
+        DELETE FROM category WHERE category_id = #{categoryId}
+    </delete>
+
+    <!--  验证是否存在  -->
+    <select id="checkExist" parameterType="string" resultType="_int">
+        SELECT count(*) FROM category WHERE category_name = #{categoryName}
+    </select>
+
+    <!--  增加新栏目  -->
+    <insert id="addCategory" parameterType="com.spring.blog.entity.Category">
+        INSERT INTO category(category_name,category_time) VALUES (#{categoryName},#{categoryTime})
+    </insert>
+
+    <!--  批量删除  -->
+    <delete id="deleteSelect">
+        DELETE FROM category WHERE category_id IN
+        <foreach item="item" index="index" collection="list" open="(" separator="," close=")">
+        #{item}
+        </foreach>
+    </delete>
+</mapper>

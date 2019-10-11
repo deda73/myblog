@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.spring.blog.mapper.UserMapper">
+<!--    <resultMap id="userMap" type="com.spring.blog.entity.User">-->
+<!--        <result property="userId" column="user_id" />-->
+<!--        <result property="userName" column="user_name" />-->
+<!--        <result property="userPhone" column="user_phone" />-->
+<!--        <result property="userNickname" column="user_nickname" />-->
+<!--        <result property="userImage" column="user_image" />-->
+<!--        <result property="userPassword" column="user_password" />-->
+<!--        <result property="userEmail" column="user_email" />-->
+<!--        <result property="userRegistTime" column="user_regist_time" />-->
+<!--        <result property="userAuthority" column="user_authority" />-->
+<!--    </resultMap>-->
+
+    <!--  查询所有用户信息  -->
+    <select id="findAll" resultType="com.spring.blog.entity.User">
+        SELECT user_id userId,user_name userName,user_phone userPhone,user_nickname userNickname,user_image userImage,user_email userEmail,user_regist_time userRegistTime,user_authority userAuthority FROM user
+    </select>
+    <!--  根据用户名以及用户密码查询用户是否存在  -->
+    <select id="findByNameAndPassword" parameterType="com.spring.blog.entity.User" resultType="_int">
+        SELECT count(*) FROM user WHERE user_name = #{userName} AND user_password = #{userPassword}
+    </select>
+
+    <!--  根据用户手机号以及用户密码查询用户是否存在  -->
+    <select id="findByPhoneAndPassword" parameterType="com.spring.blog.entity.User" resultType="_int">
+        SELECT count(*) FROM user WHERE user_phone = #{userPhone} AND user_password = #{userPassword}
+    </select>
+
+    <!--  根据用户电子邮箱以及用户密码查询用户是否存在  -->
+    <select id="findByEmailAndPassword" parameterType="com.spring.blog.entity.User" resultType="_int">
+        SELECT count(*) FROM user WHERE user_email = #{userEmail} AND user_password = #{userPassword}
+    </select>
+
+    <!--  验证用户名是否存在  -->
+    <select id="checkUserNameExist" parameterType="com.spring.blog.entity.User" resultType="_int">
+        SELECT count(*) FROM  user WHERE user_name = #{userName} OR user_email = #{userName} OR user_phone = #{userName}
+    </select>
+    <!--  验证手机号是否存在  -->
+    <select id="checkUserPhoneExist" parameterType="com.spring.blog.entity.User" resultType="_int">
+        SELECT count(*) FROM  user WHERE user_name = #{userPhone} OR user_email = #{userPhone} OR user_phone = #{userPhone}
+    </select>
+    <!--  验证邮箱是否存在  -->
+    <select id="checkUserEmailExist" parameterType="com.spring.blog.entity.User" resultType="_int">
+        SELECT count(*) FROM  user WHERE user_name = #{userEmail} OR user_email = #{userEmail} OR user_phone = #{userEmail}
+    </select>
+    <!--  用户注册  -->
+    <insert id="regist" parameterType="com.spring.blog.entity.User">
+        INSERT INTO user(user_name,user_phone,user_nickname,user_image,user_password,user_email,user_regist_time) VALUES (#{userName},#{userPhone},#{userNickname},#{userImage},#{userPassword},#{userEmail},#{userRegistTime})
+    </insert>
+    <!--  根据用户登录账号查询用户信息  -->
+    <select id="findByIdentity" parameterType="string" resultType="com.spring.blog.entity.User">
+        SELECT user_id userId,user_nickname userNickname,user_image userImage,user_authority userAuthority FROM user WHERE user_name = #{identity} OR user_phone = #{identity} OR user_email = #{identity}
+    </select>
+    <!--  删除用户  -->
+    <delete id="deleteById" parameterType="_int">
+        DELETE FROM user WHERE user_id = #{userId}
+    </delete>
+    <!--  修改用户权限为 1(普通)  -->
+    <update id="updateAuthority1" parameterType="_int">
+        UPDATE user SET user_authority = 1 WHERE user_id = #{userId}
+    </update>
+    <!--  修改用户权限为 2(禁用)  -->
+    <update id="updateAuthority2" parameterType="_int">
+        UPDATE user SET user_authority = 2 WHERE user_id = #{userId}
+    </update>
+
+    <!--  修改用户基本信息  -->
+    <!--    -->
+
+</mapper>
